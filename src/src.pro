@@ -99,7 +99,7 @@ INSTALLS += target
 
 # Translations
 
-LANGUAGES = fr_FR
+LANGUAGES = fr_FR ru_RU
 TRANSLATIONS = $$join( LANGUAGES, ".ts $${TOP_SOURCE_DIR}/translations/$${TARGET}_", "$${TOP_SOURCE_DIR}/translations/$${TARGET}_", ".ts" )
 #qm.target = $$member( $$list( $$split(TRANSLATIONS) ) )
 qm.target = qm
