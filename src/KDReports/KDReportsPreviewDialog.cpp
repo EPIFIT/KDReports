@@ -64,6 +64,11 @@ KDReports::PreviewDialog::PreviewDialog( KDReports::Report* report, QWidget *par
     QPushButton* okButton = buttonBox->button( QDialogButtonBox::Ok );
     okButton->setText(tr("&Print..."));
 
+    Qt::WindowFlags flags = Qt::Window | Qt::WindowSystemMenuHint
+                                | Qt::WindowMaximizeButtonHint
+                                | Qt::WindowMinimizeButtonHint
+                                | Qt::WindowCloseButtonHint;
+    this->setWindowFlags(flags);
 }
 
 KDReports::PreviewDialog::~PreviewDialog()
