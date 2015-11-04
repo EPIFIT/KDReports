@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS  = src examples include
 unittests: SUBDIRS += unittests
 CONFIG   += ordered
-VERSION  = 1.6.0
+VERSION  = 1.7.0
 MAJOR_VERSION = 1
 
 unix:DEFAULT_INSTALL_PREFIX = /usr/local/KDAB/KDReports-$$VERSION
@@ -49,7 +49,7 @@ TMP_SOURCE_DIR = $${IN_PWD}
 TMP_BUILD_DIR = $${OUT_PWD}
 system('echo TOP_SOURCE_DIR=$${TMP_SOURCE_DIR} >> $${QMAKE_CACHE}')
 system('echo TOP_BUILD_DIR=$${TMP_BUILD_DIR} >> $${QMAKE_CACHE}')
-windows:INSTALL_PREFIX=$$replace(INSTALL_PREFIX, \\\\, /)
+windows:INSTALL_PREFIX=$$replace($$INSTALL_PREFIX, \\\\, /)
 system('echo INSTALL_PREFIX=$$INSTALL_PREFIX >> $${QMAKE_CACHE}')
 system('echo VERSION=$$VERSION >> $${QMAKE_CACHE}')
 system('echo KDREPORTSLIB=$$KDREPORTSLIB >> $${QMAKE_CACHE}')
@@ -66,7 +66,7 @@ QMAKE_EXTRA_TARGETS += test
 INSTALL_DOC_DIR = $$INSTALL_PREFIX/share/doc/KDReports
 
 # install licenses:
-licenses.files = LICENSE.txt LICENSE.US.txt LICENSE.LGPL.txt
+licenses.files = LICENSE.txt LICENSE.US.txt LICENSE.GPL.txt LICENSE.LGPL.txt
 licenses.path = $$INSTALL_DOC_DIR
 INSTALLS += licenses
 

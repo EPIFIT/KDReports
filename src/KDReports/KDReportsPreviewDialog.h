@@ -30,6 +30,7 @@
 namespace KDReports {
 class Report;
 class PreviewWidget;
+class PreviewDialogPrivate;
 
 /**
  * The PreviewDialog class provides a dialog showing the report to the user,
@@ -46,6 +47,33 @@ public:
     explicit PreviewDialog( KDReports::Report* report, QWidget *parent = 0 );
 
     ~PreviewDialog();
+
+    /**
+     * Shows a [Print on <printer>] button, for quick printing without the print dialog
+     * \param printerName the name of the printer for the quick print button to use.
+     * Setting an empty printer name has no effect.
+     *
+     * \since 1.7
+     */
+    void setQuickPrinterName( const QString &printerName );
+
+    /**
+     * Sets the initial directory for the save dialog.
+     * \param path the initial directory
+     *
+     * \since 1.7
+     */
+    void setDefaultSaveDirectory( const QString &path );
+
+    /**
+     * Allows or forbids the user from choosing the save directory.
+     * If allowed (the default) the Save button shows a file dialog.
+     * If forbidden, the Save button shows a text input field for choosing only the filename,
+     *  and the directory will be the one set by setDefaultSaveDirectory().
+     *
+     * \since 1.7
+     */
+    void setDirectoryBrowsingEnabled( bool allowed );
 
     /**
      * Return true if the page has been selected (checked) by the user.
@@ -92,13 +120,24 @@ public:
      */
     KDReports::PreviewWidget* previewWidget();
 
+    /**
+     * The Result enum describes result code accessible with QDialog::result()
+     */
+    enum Result { Printed = 10, SavedSuccessfully, SaveError };
+
+    /**
+     * The location where the report was saved, if the user saved it
+     * Only set after exec returns.
+     */
+    QString savedFileName() const;
+
 Q_SIGNALS:
     /// Emitted when the user changes the page size.
     void pageSizeChanged( QPrinter::PageSize pageSize );
     /// Emitted when the user changes the page orientation.
     void orientationChanged( QPrinter::Orientation orientation );
 
-private Q_SLOTS:
+public Q_SLOTS:
     /// \reimp
     void accept();
     /// \reimp
@@ -106,9 +145,10 @@ private Q_SLOTS:
 
 private:
     Q_PRIVATE_SLOT( d, void _kd_slotTableBreakingDialog() )
-    class Private;
-    friend class Private;
-    Private* const d;
+    Q_PRIVATE_SLOT( d, void _kd_slotPrintWithDialog() )
+    Q_PRIVATE_SLOT( d, void _kd_slotQuickPrint() )
+    Q_PRIVATE_SLOT( d, void _kd_slotSave() )
+    PreviewDialogPrivate* const d;
 };
 
 }

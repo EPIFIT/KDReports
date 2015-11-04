@@ -79,7 +79,8 @@ KDReports::ReportPrivate::ReportPrivate( Report* report )
       m_currentModel( 0 ),
       m_reportMode( KDReports::Report::WordProcessing ),
       m_layout( new TextDocReportLayout(report) ),
-      m_mainTable( new MainTable )
+      m_mainTable( new MainTable ),
+      q( report )
 {
 }
 
@@ -127,6 +128,12 @@ static const float kdr_paperSizes[][2] = {
     {431.8f, 279.4f}, // Ledger
     {279.4f, 431.8f} // Tabloid
 };
+
+// "raw" because it does not swap for Landscape
+static QSizeF rawPaperSize(QPrinter::PageSize pageSize) {
+    return QSizeF(KDReports::mmToPixels(kdr_paperSizes[pageSize][0]),
+                  KDReports::mmToPixels(kdr_paperSizes[pageSize][1]));
+}
 
 QSizeF KDReports::ReportPrivate::paperSize() const
 {
@@ -440,7 +447,7 @@ void KDReports::ReportPrivate::debugLayoutToPdf( const char* fileName )
     bool oldLayoutDirty = true;
     m_pageContentSizeDirty = false;
     QPrinter printer;
-    setupPrinter( &printer );
+    q->setupPrinter( &printer );
     printer.setOutputFileName( QFile::decodeName( fileName ) );
     doPrint( &printer, 0 );
     printer.setOutputFileName( QString() );
@@ -466,13 +473,6 @@ KDReports::ReportBuilder* KDReports::ReportPrivate::builder()
     if (m_reportMode == KDReports::Report::WordProcessing)
         return static_cast<TextDocReportLayout *>(m_layout)->builder();
     return 0;
-}
-
-void KDReports::ReportPrivate::setupPrinter( QPrinter* printer )
-{
-    printer->setFullPage( true );
-    printer->setOrientation( m_orientation );
-    printer->setPaperSize( paperSize(), QPrinter::DevicePixel );
 }
 
 ////
@@ -673,7 +673,7 @@ QString KDReports::Report::asHtml() const
 bool KDReports::Report::printWithDialog( QWidget* parent )
 {
     QPrinter printer;
-    d->setupPrinter( &printer );
+    setupPrinter( &printer );
     QPointer<QPrintDialog> dialog = new QPrintDialog( &printer, parent );
     dialog->setMinMax( 1, numberOfPages() );
     bool ok = false;
@@ -715,7 +715,7 @@ bool KDReports::Report::exportToFile( const QString& fileName, QWidget* parent )
 {
     d->ensureLayouted();
     QPrinter printer;
-    d->setupPrinter( &printer );
+    setupPrinter( &printer );
     printer.setOutputFileName( fileName );
     const bool ret = d->doPrint( &printer, parent );
     printer.setOutputFileName( QString() );
@@ -995,6 +995,11 @@ int KDReports::Report::maximumNumberOfPagesForVerticalScaling() const
     return d->m_layout->maximumNumberOfPagesForVerticalScaling();
 }
 
+void KDReports::Report::setFixedRowHeight(qreal mm)
+{
+    d->m_layout->setFixedRowHeight( mmToPixels(mm) );
+}
+
 void KDReports::Report::setFontScalingFactor( qreal factor )
 {
     d->m_layout->setUserRequestedFontScalingFactor(factor);
@@ -1063,6 +1068,16 @@ void KDReports::Report::setCurrentRow( const QAbstractItemModel *model, int row 
 {
     d->m_currentModel = model;
     d->m_currentRow = row;
+}
+
+void KDReports::Report::setDocumentName(const QString &name)
+{
+    d->m_documentName = name;
+}
+
+QString KDReports::Report::documentName() const
+{
+    return d->m_documentName;
 }
 
 void KDReports::Report::setTabPositions( const QList<QTextOption::Tab>& tabs )
@@ -1145,6 +1160,14 @@ void KDReports::Report::setFirstPageNumber(int num)
 int KDReports::Report::firstPageNumber() const
 {
     return d->m_firstPageNumber;
+}
+
+void KDReports::Report::setupPrinter( QPrinter* printer )
+{
+    printer->setFullPage( true );
+    printer->setOrientation( d->m_orientation );
+    printer->setPaperSize( rawPaperSize(d->m_pageSize), QPrinter::DevicePixel );
+    printer->setDocName( d->m_documentName );
 }
 
 #include "moc_KDReportsReport.cpp"

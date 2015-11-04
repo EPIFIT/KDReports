@@ -30,10 +30,11 @@
 #include <KDChartPieDiagram>
 #include <KDChartPolarCoordinatePlane>
 #endif
-#include <KDReports>
+#include <KDReports.h>
 #include <QDebug>
 #include <QPainter>
 #include <QMessageBox>
+#include <QDir>
 
 static void fillEvenPagesHeader(KDReports::Header& evenPagesHeader)
 {
@@ -56,6 +57,7 @@ int main( int argc, char** argv ) {
     QApplication app( argc, argv );
 
     KDReports::Report report;
+    report.setDocumentName( "Reference report" );
 
     report.setWatermarkPixmap( QPixmap( ":/background.jpg" ) );
     report.setWatermarkText( QString() );
@@ -235,8 +237,15 @@ int main( int argc, char** argv ) {
     report.addElement(chartElement);
 #endif
 
+    // Hyperlink test
+    report.addElement( KDReports::HtmlElement("<a href=\"http://www.kdab.com\">click here to open http://www.kdab.com</a>") );
+
     //report.exportToHtml( "out.html" );
 
     KDReports::PreviewDialog preview( &report );
+    //preview.setQuickPrinterName( "hp-LaserJet-1300" );
+    preview.setDefaultSaveDirectory( QDir::homePath() );
+    //preview.setDirectoryBrowsingEnabled( false );
+
     return preview.exec();
 }

@@ -58,7 +58,6 @@ class Header;
 typedef Header Footer;
 class ReportPrivate;
 class ReportBuilder;
-class PreviewDialog;
 class TextDocument;
 class TableBreakingSettingsDialog;
 class AutoTableElement;
@@ -108,6 +107,7 @@ Q_DECLARE_FLAGS( HeaderLocations, HeaderLocation )
 class KDREPORTS_EXPORT Report : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString documentName READ documentName WRITE setDocumentName)
 
 public:
     /**
@@ -513,6 +513,19 @@ public:
     void setCurrentRow( const QAbstractItemModel *model, int row );
 
     /**
+     * Sets the name of the report.
+     * This is used for QPrinter::setDocName(), which gives a name to the print job.
+     * \since 1.7
+     */
+    void setDocumentName( const QString &name );
+
+    /**
+     * Returns the name of the report.
+     * \since 1.7
+     */
+    QString documentName() const;
+
+    /**
      * Show the print dialog to let the user choose a printer, and print.
      * \param parent the parent widget for the progress dialog that appears when printing
      * \return false if the print dialog was cancelled
@@ -683,6 +696,13 @@ public:
     int maximumNumberOfPagesForVerticalScaling() const;
 
     /**
+     * Sets a fixed row height. Only available in spreadsheet mode.
+     * The main use case is printing of fixed size labels.
+     * \since 1.7
+     */
+    void setFixedRowHeight( qreal mm );
+
+    /**
      * Returns a list of the auto-table elements that were used to create this report.
      * You wouldn't normally need this method; this is only to be able to change some
      * settings like showing table headers or table borders at runtime.
@@ -838,6 +858,8 @@ private:
 
     QString asHtml() const;
 
+    void setupPrinter( QPrinter* printer );
+
 private:
     Q_DISABLE_COPY( Report )
     friend class HeaderReportBuilder; // for headerChanged()
@@ -845,6 +867,9 @@ private:
     friend class ChartElement; // for textDocumentWidth()
     friend class XmlParser; // d->m_builder
     friend class Header; // doc()
+    friend class PreviewDialogPrivate; // setupPrinter
+    friend class PreviewWidgetPrivate; // setupPrinter
+    friend class ReportPrivate; // setupPrinter
     ReportPrivate* const d;
 };
 

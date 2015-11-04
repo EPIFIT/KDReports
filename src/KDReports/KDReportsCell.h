@@ -35,6 +35,7 @@ class ReportBuilder;
 class Element;
 class CellContentMap;
 class TableElement;
+class CellPrivate;
 
 /**
  * This class presents a cell in a table.
@@ -90,7 +91,7 @@ public:
     /**
      * @internal - not supported
      */
-    Element* clone() const { return 0; }
+    Element* clone() const { return 0; } //krazy:exclude=inline
 
 private:
     // TableElement needs to create/destroy/copy cells
@@ -105,8 +106,7 @@ private:
     Cell(const Cell &other);
     Cell &operator=(const Cell &other);
 
-    class Private;
-    Private* const d;
+    CellPrivate* const d;
 };
 
 }
