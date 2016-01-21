@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2015 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -93,8 +93,13 @@ public:
      */
     Element* clone() const { return 0; } //krazy:exclude=inline
 
+    /**
+     * @internal - do not call
+     */
+    ~Cell(); // public for QMap
+
 private:
-    // TableElement needs to create/destroy/copy cells
+    // TableElement needs to create/copy cells
     friend class TableElement;
     friend class QMap<QPair<int, int>, Cell>;
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -102,7 +107,6 @@ private:
     friend struct QMapNode<QPair<int, int>, Cell>;
 #endif
     Cell();
-    ~Cell();
     Cell(const Cell &other);
     Cell &operator=(const Cell &other);
 
