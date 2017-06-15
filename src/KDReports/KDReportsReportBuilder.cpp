@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -66,7 +66,11 @@ void KDReports::ReportBuilder::addBlockElement( const Element& element, Qt::Alig
         m_first = false;
     }
 
-    const QTextCharFormat origCharFormat = cursor.charFormat();
+    // Set the default font again, the previous block should have no effect on this one
+    QTextCharFormat charFormat = cursor.charFormat();
+    charFormat.setFont( m_defaultFont );
+    cursor.setCharFormat( charFormat );
+
     QTextBlockFormat blockFormat;
     blockFormat.setAlignment( horizontalAlignment );
     setupBlockFormat( blockFormat );
@@ -78,7 +82,6 @@ void KDReports::ReportBuilder::addBlockElement( const Element& element, Qt::Alig
 
     element.build( *this );
 
-    cursor.setCharFormat( origCharFormat );
     cursor.endEditBlock();
 
 #if 0 // DEBUG CODE for tab positions
@@ -101,19 +104,20 @@ void KDReports::ReportBuilder::addVariable( KDReports::VariableType variable )
                           : variableValue( 0 /*pageNumber*/, m_report, variable );
     KDReports::TextElement element( value );
 
+    const QTextCharFormat origCharFormat = cursor().charFormat();
+
     // Keep the current font (KDRE-91).
-    // Can't use cursor().charFormat() for that, addInlineElement resets it to default.
     QTextCursor docCursor( &currentDocument() );
     docCursor.setPosition( charPosition );
-    element.setCharFormat( docCursor.charFormat() );
+    cursor().setCharFormat( docCursor.charFormat() );
 
     cursor().beginEditBlock();
-    const QTextCharFormat origCharFormat = cursor().charFormat();
     element.build( *this );
-    cursor().setCharFormat( origCharFormat ); // restore the orig format
     cursor().endEditBlock();
 
     setVariableMarker( currentDocument(), charPosition, variable, value.length() );
+
+    cursor().setCharFormat( origCharFormat ); // restore the orig format
 }
 
 void KDReports::ReportBuilder::addVerticalSpacing( qreal space )
@@ -189,6 +193,7 @@ void KDReports::ReportBuilder::copyStateFrom( ReportBuilder& parentBuilder )
     m_rightMargin = parentBuilder.m_rightMargin;
     m_topMargin = parentBuilder.m_topMargin;
     m_bottomMargin = parentBuilder.m_bottomMargin;
+    m_defaultFont = parentBuilder.m_defaultFont;
 }
 
 QDebug operator <<(QDebug &dbg, const QTextOption::Tab &tab)

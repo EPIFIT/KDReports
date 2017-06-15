@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -137,6 +137,7 @@ void KDReports::TableElement::build( ReportBuilder& builder ) const
     tableFormat.setAlignment( textDocCursor.blockFormat().alignment() );
     tableFormat.setBackground(background());
     fillTableFormat( tableFormat, textDocCursor );
+    QTextCharFormat charFormat = textDocCursor.charFormat();
 
     QTextTable* textTable = textDocCursor.insertTable( rowCount, columnCount,
                                                        tableFormat );
@@ -151,7 +152,7 @@ void KDReports::TableElement::build( ReportBuilder& builder ) const
         QTextTableCell tableCell = textTable->cellAt( row, column );
         Q_ASSERT( tableCell.isValid() );
         QTextCursor cellCursor = tableCell.firstCursorPosition();
-        QTextCharFormat tableCellFormat;
+        QTextCharFormat tableCellFormat = charFormat;
         tableCellFormat.setBackground( cell.background() );
         tableCellFormat.setTableCellColumnSpan( cell.columnSpan() );
         tableCellFormat.setTableCellRowSpan( cell.rowSpan() );
@@ -160,6 +161,7 @@ void KDReports::TableElement::build( ReportBuilder& builder ) const
         ReportBuilder cellBuilder( builder.currentDocumentData(),
                                    cellCursor, builder.report() );
         cellBuilder.copyStateFrom( builder );
+        cellBuilder.setDefaultFont( charFormat.font() );
         cell.build( cellBuilder );
     }
 

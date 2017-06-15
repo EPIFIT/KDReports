@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -30,4 +30,10 @@ qreal KDReports::mmToPixels( qreal mm )
 {
     return mm * 0.039370147 // mm to inch
         * qt_defaultDpi();  // inch to pixels
+}
+
+qreal KDReports::mmToPixels( qreal mm, double dpi )
+{
+    return mm * 0.039370147 // mm to inch
+        * dpi;  // inch to pixels
 }

@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -39,6 +39,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QMap>
+#include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QPointer>
 #include <QStyle>
@@ -130,9 +131,9 @@ static const float kdr_paperSizes[][2] = {
 };
 
 // "raw" because it does not swap for Landscape
-static QSizeF rawPaperSize(QPrinter::PageSize pageSize) {
-    return QSizeF(KDReports::mmToPixels(kdr_paperSizes[pageSize][0]),
-                  KDReports::mmToPixels(kdr_paperSizes[pageSize][1]));
+static QSizeF rawPaperSize(QPrinter::PageSize pageSize, QPrinter* printer) {
+    return QSizeF(KDReports::mmToPixels(kdr_paperSizes[pageSize][0], printer->logicalDpiX()),
+                  KDReports::mmToPixels(kdr_paperSizes[pageSize][1], printer->logicalDpiY()));
 }
 
 QSizeF KDReports::ReportPrivate::paperSize() const
@@ -357,16 +358,20 @@ void KDReports::ReportPrivate::paintPage( int pageNumber, QPainter& painter )
     m_layout->paintPageContent( pageNumber, painter );
     painter.restore();
 
+    QAbstractTextDocumentLayout::PaintContext ctx;
+    ctx.palette.setColor(QPalette::Text, Qt::black);
     if ( header && !skipHeadersFooters ) {
         painter.save();
         painter.translate( left, top );
-        header->doc().contentDocument().drawContents( &painter, painter.clipRegion().boundingRect() );
+        ctx.clip = painter.clipRegion().boundingRect();
+        header->doc().contentDocument().documentLayout()->draw(&painter, ctx);
         painter.restore();
     }
     if ( footer && !skipHeadersFooters ) {
         painter.save();
         painter.translate( left, m_paperSize.height() - bottom - footerHeight );
-        footer->doc().contentDocument().drawContents( &painter, painter.clipRegion().boundingRect() );
+        ctx.clip = painter.clipRegion().boundingRect();
+        footer->doc().contentDocument().documentLayout()->draw(&painter, ctx);
         painter.restore();
     }
 }
@@ -715,8 +720,8 @@ bool KDReports::Report::exportToFile( const QString& fileName, QWidget* parent )
 {
     d->ensureLayouted();
     QPrinter printer;
+    printer.setOutputFileName( fileName ); // must be done before setupPrinter, since it affects DPI
     setupPrinter( &printer );
-    printer.setOutputFileName( fileName );
     const bool ret = d->doPrint( &printer, parent );
     printer.setOutputFileName( QString() );
     return ret;
@@ -1166,7 +1171,7 @@ void KDReports::Report::setupPrinter( QPrinter* printer )
 {
     printer->setFullPage( true );
     printer->setOrientation( d->m_orientation );
-    printer->setPaperSize( rawPaperSize(d->m_pageSize), QPrinter::DevicePixel );
+    printer->setPaperSize( rawPaperSize(d->m_pageSize, printer), QPrinter::DevicePixel );
     printer->setDocName( d->m_documentName );
 }
 

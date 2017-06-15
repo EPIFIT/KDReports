@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -51,6 +51,10 @@ void setVariableMarker( QTextDocument& textDoc, int pos, KDReports::VariableType
  * @internal
  */
 QString variableValue( int pageNumber, KDReports::Report* report, VariableType type );
+/**
+ * @internal
+ */
+void cleanupVariableProperties( QTextCharFormat &charFormat );
 
 /**
  * @internal

@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -106,6 +106,13 @@ public:
      * \since 1.3
      */
     void setDefaultFont( const QFont& font );
+
+    /**
+     * \return the default font set by setDefaultFont(), if any
+     * \param isSet set to true if a default font was set, false otherwise
+     * \since 1.8
+     */
+    QFont defaultFont( bool *isSet ) const;
 
     /**
      * Copies a table element.

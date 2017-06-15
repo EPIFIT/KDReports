@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -380,6 +380,11 @@ void KDReports::TextDocumentData::regenerateOneTable( const KDReports::AutoTable
 
     ReportBuilder builder( *this,
                            cursor, 0 /* hack - assumes Report is not needed */ );
+    bool isSet;
+    QFont font = tableElement.defaultFont( &isSet );
+    if ( isSet ) {
+        builder.setDefaultFont( font );
+    }
     tableElement.build( builder ); // this calls registerTable again
 
     cursor.setBlockFormat( blockFormat );

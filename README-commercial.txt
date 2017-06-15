@@ -11,11 +11,11 @@ Contributing
 ============
 KDAB will happily accept external contributions, but substantial
 contributions will require a signed Copyright Assignment Agreement.
-Contact support@kdab.com for more information.
+Contact info@kdab.com for more information.
 
 Licensing
 =========
-Copyright (C) 2007-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>
+Copyright (C) 2007-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, <info@kdab.com>
 
 Commercial licensing terms are available in the included file
         LICENSE.txt (for non-US customers)
@@ -36,4 +36,6 @@ of the major contributors to the Qt Project. We can give advanced or
 standard trainings anywhere around the globe.
 
 
-KD REPORTS and the KD REPORTS image are trademarks of Klarälvdalens Datakonsult AB
+KD REPORTS and the KD REPORTS logo are registered trademarks of Klaralvdalens Datakonsult AB
+in the European Union, the Unites States, and/or other countries.  Other product and
+company names and logos may be trademarks or registered trademarks of their respective companies.

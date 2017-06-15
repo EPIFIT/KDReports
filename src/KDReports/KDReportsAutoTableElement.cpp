@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -155,6 +155,8 @@ void FillCellHelper::fill( QTextTable* textTable, KDReports::ReportBuilder& buil
 #else
         charFormat.setFont( cellQFont );
 #endif
+    } else {
+        charFormat.setFont( builder.defaultFont() );
     }
     if ( foreground.isValid() )
         charFormat.setForeground( foreground );

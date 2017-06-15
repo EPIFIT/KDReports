@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2007-2016 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2007-2017 Klaralvdalens Datakonsult AB.  All rights reserved.
 **
 ** This file is part of the KD Reports library.
 **
@@ -619,6 +619,41 @@ private:
             }
         }
     }
+    static void addTable( KDReports::Report& report, int rows, int columns )
+    {
+        const QString cellText = QString::fromLatin1( "HELLO WORLD table %1x%2" )
+                                 .arg( rows ).arg( columns );
+        TableElement table;
+        table.setBorder( 1 );
+        for ( int row = 0; row < rows; ++row ) {
+            for ( int column = 0; column < columns; ++column ) {
+                table.cell(0, column).addElement( KDReports::TextElement( cellText ) );
+            }
+        }
+        report.addElement( table );
+    }
+
+    static void makeSimpleTable( KDReports::Report& report )
+    {
+        // Test for setTableBreakingEnabled
+        // This also tests that the cell rect is correctly determined, not
+        // just from the bounding rect of the first paragraph of the cell.
+        QFont defaultFont( QLatin1String( "Helvetica" ), 48 );
+        report.setDefaultFont( defaultFont );
+        TableElement table;
+        table.setBorder( 1 );
+        int rows = 1;
+        int columns = 4;
+        for ( int row = 0; row < rows; ++row ) {
+            for ( int column = 0; column < columns; ++column ) {
+                KDReports::Cell& cell = table.cell(0, column);
+                cell.addElement( KDReports::TextElement( "a" ) ); // a short first line
+                cell.addElement( KDReports::TextElement( "HELLO WORLD" ) ); // a long second line
+            }
+        }
+        report.addElement( table );
+    }
+
     QStandardItemModel m_model;
 };
 

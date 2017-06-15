@@ -41,14 +41,14 @@ Get Involved
 ============
 KDAB will happily accept external contributions, but substantial
 contributions will require a signed Copyright Assignment Agreement.
-Contact support@kdab.com for more information.
+Contact info@kdab.com for more information.
 
 Please submit your contributions or issue reports from our GitHub space at
 https://github.com/KDAB/KDReports
 
 License
 =======
-The KD Reports Software is (C) 2007-2016 Klarälvdalens Datakonsult AB (KDAB),
+The KD Reports Software is (C) 2007-2017 Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of:
 * the LGPL (see LICENSE.LGPL.txt for details)
 * the GPL (see LICENSE.GPL.txt for details)
@@ -69,4 +69,7 @@ standard trainings anywhere around the globe.
 
 Please visit http://www.kdab.com to meet the people who write code like this.
 
-KD REPORTS and the KD REPORTS image are trademarks of Klarälvdalens Datakonsult AB
+
+KD REPORTS and the KD REPORTS logo are registered trademarks of Klaralvdalens Datakonsult AB
+in the European Union, the Unites States, and/or other countries.  Other product and
+company names and logos may be trademarks or registered trademarks of their respective companies.
