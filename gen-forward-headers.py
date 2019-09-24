@@ -6,4 +6,4 @@ version = "1.8.0"
 subprojects = ["KDReports"]
 prefixed = True
 
-autogen(project, version, subprojects, prefixed, policyVersion = 2)
+autogen(project, version, subprojects, prefixed, steps = ["generate-forward-headers"], policyVersion = 2)
